@@ -26,12 +26,9 @@ func SameContentFiles(dir string) map[string][]string {
 		return fileMap
 	}
 	for _, fileList := range fileListMap {
-		//fmt.Println(size, fileList)
 		if len(fileList) <= 1 {
 			continue
 		}
-		//tempMd5Map := make(map[string][]string)
-		//tempMd5List := make([]string, 0)
 		for _, file := range fileList {
 			md5sum := fmt.Sprintf("%x", getMd5(file))
 			entry, exists := fileMap[md5sum]
@@ -100,7 +97,6 @@ func getMd5(file string) []byte {
 func getFilesInDir(dir string) map[int64][]string {
 	fileMap := make(map[int64][]string)
 	filepath.Walk(dir, func(path string, f os.FileInfo, err error) error {
-		//fmt.Println(f.Size())
 		if !f.IsDir() {
 			fileList := fileMap[f.Size()]
 			fileList = append(fileList, path)
