@@ -29,7 +29,14 @@ func TestDuplicateFileContent(t *testing.T) {
 		"/home/vagrant/temp_dir/e.txt",
 	}
 	if !reflect.DeepEqual(rv, expectedMap) {
-		fmt.Println(rv, expectedMap)
+		fmt.Println("")
+		fmt.Println("===============RETURN INFORMATION=============")
+		fmt.Println("")
+		printDuplicateFileContent(rv)
+		fmt.Println("")
+		fmt.Println("===============EXPECTED INFORMATION===========")
+		fmt.Println("")
+		printDuplicateFileContent(expectedMap)
 		t.Error()
 	}
 }
