@@ -18,33 +18,34 @@ type DuplicateFileInfo struct {
 /*
 * "Given a directory with lots of files, find the files that have the same content"
  */
-func SameContentFiles(dir string) {
+func SameContentFiles(dir string) map[string][]string {
 	// it will return a map where all file with same file sizes are divided
 	fileListMap := getFilesInDir(dir)
-
-	if len(fileListMap) == 0 {
-		return
-	}
 	fileMap := make(map[string][]string)
-	for size, fileList := range fileListMap {
-		fmt.Println(size, fileList)
+	if len(fileListMap) == 0 {
+		return fileMap
+	}
+	for _, fileList := range fileListMap {
+		//fmt.Println(size, fileList)
 		if len(fileList) <= 1 {
 			continue
 		}
-		tempMd5Map := make(map[string][]string)
+		//tempMd5Map := make(map[string][]string)
 		//tempMd5List := make([]string, 0)
 		for _, file := range fileList {
 			md5sum := fmt.Sprintf("%x", getMd5(file))
-			entry, exists := tempMd5Map[md5sum]
+			entry, exists := fileMap[md5sum]
 			if exists {
 				// compare byte-by-byte for the file & the entry first file
 				if compareFiles(file, entry[0]) {
 					entry = append(entry, file)
+				} else {
+					// we need to cache the conflicts one
 				}
 			} else {
 				entry = append(entry, file)
 			}
-			tempMd5Map[md5sum] = entry
+			fileMap[md5sum] = entry
 		}
 	}
 	/*
@@ -60,7 +61,8 @@ func SameContentFiles(dir string) {
 			fileMap[md5sum] = entry
 		}
 	*/
-	//printDuplicateFileContent(fileMap)
+	printDuplicateFileContent(fileMap)
+	return fileMap
 }
 
 func compareFiles(a, b string) bool {
@@ -116,10 +118,11 @@ func printFileNames(files []string) {
 	}
 }
 
-func printDuplicateFileContent(fileMap map[string]DuplicateFileInfo) {
-	for _, fileInfo := range fileMap {
-		fmt.Println("file:", fileInfo.FileName, "has duplicate files as follows:")
+func printDuplicateFileContent(fileMap map[string][]string) {
+	for md5sum, fileInfo := range fileMap {
+		//fmt.Println("file:", fileInfo.FileName, "has duplicate files as follows:")
 		//fmt.Println(strings.Trim(fmt.Sprintf(fileInfo.MatchContentFileName), "[]"))
-		fmt.Println(fileInfo.MatchContentFileName)
+		fmt.Println(md5sum, "duplicate file:")
+		fmt.Println(fileInfo)
 	}
 }
